@@ -3,13 +3,13 @@
 This processing library uploads sketches to your Arduino by using java. No dependencies on avrdude etc. This comes very handy if you want to include
 sketchupload into your processing app (e.g. updating the firmware).  So users donÄt have to uses the Arduino IDE anymore - nice!
 
-The was originally written by Dave Brink (davebrink at prodigy.net) see his releases here:
+The code was originally written by Dave Brink (davebrink at prodigy.net) see his releases here:
 http://mail.arduino.cc/pipermail/developers_arduino.cc/2009-February/000544.html
 
-with that the Arduino bootleader could even be optimised, he includes the sources here:
+with that, the Arduino bootloader can even be optimized, David includes the sources here:
 http://mail.arduino.cc/pipermail/developers_arduino.cc/2009-February/000546.html
 
-right now it works successfully for ATmega168 but not ATmega328. I'll investigate further on that..
+right now it works for me successfully on ATmega168, but not for ATmega328. I'll investigate further on that..
 
 == Usage
 see exmaples/Loader.pde basically it's just one line, given .hex fiel (compiled Arduino sketch), portName, baudRate and pageSize
