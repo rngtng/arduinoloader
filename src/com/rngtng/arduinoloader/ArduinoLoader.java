@@ -1,8 +1,8 @@
 /*
   you can put a one sentence description of your library here.
-  
+
   (c) copyright
-  
+
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
@@ -47,7 +47,6 @@ public class ArduinoLoader {
 	public static final byte[] okrsp = { 0x14, 0x10 };
 
 	static InputStream input2;
-
 	static OutputStream output2;
 
 	public static int waitForChar(InputStream i) throws Exception {
@@ -74,20 +73,26 @@ public class ArduinoLoader {
 	static int imagesize = 0;
 
 	public static int upload(String filename, String comport, int baud, int pageSize) throws Exception {
-		PApplet.println("Serial Proxy Starting, port:" + comport + ", baud:" + baud
-				+ ", pagesize:" + pageSize + ", file:" + filename);
+		return upload(openFile(filename), comport, baud, pageSize);
+	}
 
-		// load the hex file into memory
-		parsehex(filename);
-
+	public static int upload(BufferedReader in, String comport, int baud, int pageSize) throws Exception {
+		// open Port
+		PApplet.println("Serial Proxy Starting, port:" + comport + ", baud:" + baud + ", pagesize:" + pageSize);
+	//	 + ", file:" + filename);
+		
 		CommPortIdentifier portId2 = CommPortIdentifier.getPortIdentifier(comport);
-
 		SerialPort port2 = (SerialPort) portId2.open("serial madness2", 4001);
+
+		port2.setSerialPortParams(baud, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+		port2.setDTR(false);
+		
 		input2 = port2.getInputStream();
 		output2 = port2.getOutputStream();
-		port2.setSerialPortParams(baud, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-
-		port2.setDTR(false);
+		
+		// load the hex file into memory
+		parsehex(in);
+		
 		output2.write(hello);
 
 		try {
@@ -171,6 +176,7 @@ public class ArduinoLoader {
 
 		port2.setDTR(true);
 		port2.close();
+		
 		return imagesize;
 	}
 
@@ -188,16 +194,16 @@ public class ArduinoLoader {
 	static String hexval(int i) {
 		return hexvals[i / 16] + hexvals[i % 16];
 	}
+	
+	static void parsehex(BufferedReader in) throws Exception {
 
-	static void parsehex(String fname) throws Exception {
-		BufferedReader in = new BufferedReader(new FileReader(fname));
 		String t = in.readLine();
 		int line = 0;
 		imagesize = 0;
 		while (t != null) {
 			line++;
-			if (!":".equals(t.substring(0, 1))) throw new Exception("line#" + line + " Invalid format in hex file " + fname);
-			
+			if (!":".equals(t.substring(0, 1))) throw new Exception("line#" + line + " Invalid format in hex file ");
+
 			int len = Integer.parseInt(t.substring(1, 3), 16);
 			imagesize += len;
 			int addr = Integer.parseInt(t.substring(3, 7), 16);
@@ -216,7 +222,7 @@ public class ArduinoLoader {
 			}
 			cks %= 256;
 			if (cks != cksum)
-				throw new Exception("line#" + line + " Invalid checksum in hex file " + fname);
+				throw new Exception("line#" + line + " Invalid checksum in hex file ");
 
 			// copy to the image so we can work with the page size easier
 			for (int x = 0; x < data.length; x++) {
@@ -226,6 +232,11 @@ public class ArduinoLoader {
 			t = in.readLine();
 		}
 
+	}
+
+	private static BufferedReader openFile(String fname) throws Exception {
+		PApplet.println("Open Hex File: " + fname);
+		return new BufferedReader(new FileReader(fname));	
 	}
 
 }

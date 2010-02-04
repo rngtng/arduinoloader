@@ -2,4 +2,5 @@
 distribution
 bin
 reference
-examples/Loader/blink/applet
+applet
+*.class
