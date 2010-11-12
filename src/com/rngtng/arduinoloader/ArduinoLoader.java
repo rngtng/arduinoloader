@@ -1,34 +1,28 @@
 /*
-  you can put a one sentence description of your library here.
-
-  (c) copyright
-
-  This library is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 2.1 of the License, or (at your option) any later version.
-
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-  Lesser General Public License for more details.
-
-  You should have received a copy of the GNU Lesser General
-  Public License along with this library; if not, write to the
-  Free Software Foundation, Inc., 59 Temple Place, Suite 330,
-  Boston, MA  02111-1307  USA
+ *  java based uploader for Arduino and any other %100 open source projects, might also work with stk500 by chance
+ *
+ *  uses rxtx http://users.frii.com/jarvi/rxtx/download.html
+ *
+ *  (c) copyright courtesy dcb AT opengauge.org
+ *
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General
+ *  Public License along with this library; if not, write to the
+ *  Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+ *  Boston, MA  02111-1307  USA
  */
 
 package com.rngtng.arduinoloader;
-
-import processing.core.PApplet;
-
-/* java based uploader for arduino and any other %100 open source projects,
- might also work with stk500 by chance  */
-
-//uses rxtx http://users.frii.com/jarvi/rxtx/download.html
-
-//courtesy dcb AT opengauge.org
 
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
@@ -37,6 +31,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import processing.core.PApplet;
 
 public class ArduinoLoader {
 
@@ -80,19 +76,19 @@ public class ArduinoLoader {
 		// open Port
 		PApplet.println("Serial Proxy Starting, port:" + comport + ", baud:" + baud + ", pagesize:" + pageSize);
 	//	 + ", file:" + filename);
-		
+
 		CommPortIdentifier portId2 = CommPortIdentifier.getPortIdentifier(comport);
 		SerialPort port2 = (SerialPort) portId2.open("serial madness2", 4001);
 
 		port2.setSerialPortParams(baud, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 		port2.setDTR(false);
-		
+
 		input2 = port2.getInputStream();
 		output2 = port2.getOutputStream();
-		
+
 		// load the hex file into memory
 		parsehex(in);
-		
+
 		output2.write(hello);
 
 		try {
@@ -176,7 +172,7 @@ public class ArduinoLoader {
 
 		port2.setDTR(true);
 		port2.close();
-		
+
 		return imagesize;
 	}
 
@@ -194,7 +190,7 @@ public class ArduinoLoader {
 	static String hexval(int i) {
 		return hexvals[i / 16] + hexvals[i % 16];
 	}
-	
+
 	static void parsehex(BufferedReader in) throws Exception {
 
 		String t = in.readLine();
@@ -236,7 +232,7 @@ public class ArduinoLoader {
 
 	private static BufferedReader openFile(String fname) throws Exception {
 		PApplet.println("Open Hex File: " + fname);
-		return new BufferedReader(new FileReader(fname));	
+		return new BufferedReader(new FileReader(fname));
 	}
 
 }
